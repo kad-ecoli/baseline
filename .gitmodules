@@ -1,0 +1,3 @@
+[submodule "CAFA_assessment_tool"]
+	path = CAFA_assessment_tool
+	url = https://github.com/ashleyzhou972/CAFA_assessment_tool

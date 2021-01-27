@@ -5,7 +5,6 @@ rootdir=`dirname $FILE`
 cd $rootdir/download
 
 echo download CAFA3 data
-
 wget https://www.biofunctionprediction.org/cafa-targets/CAFA3_targets.tgz -O CAFA3_targets.tgz
 wget https://www.biofunctionprediction.org/cafa-targets/CAFA3_training_data.tgz -O CAFA3_training_data.tgz
 wget https://ndownloader.figshare.com/files/17519846 -O supplementary_data.tar.gz
@@ -13,7 +12,6 @@ wget https://www.biofunctionprediction.org/annotations/gene_ontology_edit.obo.20
 wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.4.0/ncbi-blast-2.4.0+-x64-linux.tar.gz -O ncbi-blast-2.4.0+-x64-linux.tar.gz
 
 echo decompress CAFA3 data
-
 tar -xvf CAFA3_targets.tgz
 tar -xvf CAFA3_training_data.tgz
 tar -xvf supplementary_data.tar.gz
@@ -44,3 +42,4 @@ cd $rootdir/data
 zcat $rootdir/download/gene_ontology_edit.obo.2016-06-01.gz > $rootdir/data/go-basic.obo
 cp $rootdir/download/CAFA3_training_data/uniprot_sprot_exp.fasta $rootdir/data/uniprot_sprot_exp.fasta
 $rootdir/bin/makeblastdb -in uniprot_sprot_exp.fasta -dbtype prot -parse_seqids
+$rootdir/bin/propagate_training_terms.py go-basic.obo $rootdir/download/CAFA3_training_data/uniprot_sprot_exp.txt

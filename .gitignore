@@ -1,3 +1,4 @@
 *.pyc
 .*.sw*
 __pycache__
+prediction/*_*_*_go.txt

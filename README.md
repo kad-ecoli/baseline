@@ -7,11 +7,17 @@ git clone https://github.com/kad-ecoli/baseline
 cd baseline
 git submodule init
 git submodule update
+```
+
+The following commands are not needed, because the binaries and data files
+are already included as part of this package.
+```bash
 ./download.sh
 cd src/
 make install
 cd ..
 ```
+
 For assessment, this package use the 
 [CAFA_assessment_tool](https://github.com/ashleyzhou972/CAFA_assessment_tool),
 which dependends on python3 to generate correct Fmax. For prediction, both
@@ -20,7 +26,7 @@ python2.7 and python3 can be used, and will generate identical result.
 ## Usage ##
 Run naive (``bin/predict_naive.py``) and blast (``predict_blast.py``) baseline
 predictors on CAFA3 targets:
-``bash
+```bash
 ./predict.sh
 ```
 Input files are at ``input/``. Predictions are at ``prediction/``.

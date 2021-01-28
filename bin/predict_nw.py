@@ -46,8 +46,12 @@ def run_nw(infile):
             nw_dict[target]=[]
         elif len(nw_dict[target])>=500:
             continue
+        IDali=float(IDali)
+        ID1=float(ID1)
+        ID2=float(ID2)
+        score=float(score)
         nw_dict[target].append([template,
-            Lali,                     # localID
+            IDali,                    # localID
             ID1,                      # globalID1
             ID2,                      # globalID2
             min((ID1,ID2)),           # globalID3

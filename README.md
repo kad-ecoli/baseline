@@ -125,7 +125,7 @@ Cscore_netgo(q)  = ( sum ( bitscore_t(q) )) / ( sum ( bitscore_t ))   ... (10)
 Equations (9) and (10) are implemented by the sequence-based submodule of
 MetaGO and NetGO, respecitvely, and probably should not be considered
 "baseline" due to mathematical complexity. All scoring schemes from equation
-(2) to (10) are based on blast local alignment using ** default ** blast search
+(2) to (10) are based on blast local alignment using **default** blast search
 parameters, except for a change of output format (``-outfmt 6``) for easy
 parsing.
 

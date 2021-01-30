@@ -29,13 +29,6 @@ baseline predictors on CAFA3 targets:
 ```
 Input files are at ``input/``. Predictions are at ``prediction/``.
 
-There is also a predictor based on the Needleman-Wunsch global aligner 
-(``bin/predict_nw.py``), but is not run by default due to very long running
-time.  To run this predictor, uncomment the following line in ``predict.sh``:
-```bash
-    #$rootdir/bin/predict_nw.py $rootdir/input/target.$species.fasta _${species}_go.txt
-```
-
 Assess the performance (Fmax) of different predictor:
 ```bash
 ./assess.sh
@@ -43,6 +36,18 @@ Assess the performance (Fmax) of different predictor:
 ```
 Assessment summaries are at ``CAFA_assessment_tool/results/``.
 Summary graphic is at Fmax_full.png.
+
+There is also a predictor based on the Needleman-Wunsch global aligner 
+(``bin/predict_nw.py``). It is not run by default because of very long running
+time with little to no improvement over blast. To run and assess this global
+alignment based predictor, use:
+```bash
+./predict_nw.sh
+./assess_nw.sh
+./plot_nw.py
+```
+Assessment summaries are at ``CAFA_assessment_tool/results/``.
+Summary graphic is at Fmax_full_nw.png.
 
 ## Math ##
 In naive baseline (``bin/predict_naive.py``), the confidence score of
@@ -98,12 +103,12 @@ Cscore_evalue(q) =     max        { 1 - 1 /( 1 + exp( - evalue_t(q) ) }   ... (6
 Here, ``evalue_t(q)`` is the evalue for the ``t``-th hit with term ``q``.
 
 The sixth score is based on ``rank_t(q)``, the ranking of ``t``-th hit with
-term ``q``:
+term ``q`` among all hits:
 ```
-Cscore_rank(q) =     max        { 1 - rank_t(q) / N }   ... (7)
+Cscore_rank(q) =     max        { 1 - ( rank_t(q) - 1 ) / N }   ... (7)
                 t=1, ... , N(q)
 ```
-Here, ``N`` is the total number of hits (with and without ``q``.)
+Here, ``N`` is the number of all hits (with and without ``q``.)
 
 The seventh score is based on frequency of a GO term among hits:
 ```
@@ -148,6 +153,8 @@ but with input and output format changed to support multiple sequences in a
 single input file. Due to time expense of NWalign, it will only be performed
 on the hits identified by a blast run. Since NWalign does not report bitscore,
 alignment score is used instead of bitscore for equation (10) and (11).
+For (7), the ranking is based on NWalign alignment score rather than the
+ranking in the blast output.
 
 ## Result ##
 ![Fmax_full.png](Fmax_full.png?raw=true "Fmax_full.png")

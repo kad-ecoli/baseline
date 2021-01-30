@@ -91,7 +91,7 @@ def run_nw(target_list,fasta_dict,blast_dict,outfile):
             IDali=float(IDali)
             ID1=float(ID1)
             ID2=float(ID2)
-            score=float(score)
+            score=max(0,float(score))
             nw_dict[target].append([template,
                 IDali,                    # localID
                 score,                    # alnscore / self_alnscore

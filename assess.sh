@@ -15,8 +15,6 @@ blastmetago_1
 blastnetgo_1
 blastbitscore_1"
 
-method_list="blastbitscore_1"
-
 for method in $method_list;do
     echo assessing $method
     species=`head -1 $rootdir/input/list`

@@ -141,13 +141,13 @@ against the template database (i.e. training database), the second time for
 searching the target against itself.
 
 The ``bin/predict_nw.py`` program implements equations (2) to (5) and (7) to
-(10), using Needleman-Wunsch global sequence alignment (NWalign) rather than
+(11), using Needleman-Wunsch global sequence alignment (NWalign) rather than
 blast local alignment. The implementation of NWalign is identical to the 
 [Fortran version](https://zhanglab.ccmb.med.umich.edu/NW-align/),
 but with input and output format changed to support multiple sequences in a
-single input file. For consistency with blast, only the top 500 hits with the
-highest alignment score are considered. Since NWalign does not report bitscore,
-alignment score is used instead of bitscore for equation (10).
+single input file. Due to time expense of NWalign, it will only be performed
+on the hits identified by a blast run. Since NWalign does not report bitscore,
+alignment score is used instead of bitscore for equation (10) and (11).
 
 ## Result ##
 ![Fmax_full.png](Fmax_full.png?raw=true "Fmax_full.png")
@@ -155,8 +155,9 @@ In terms of Fmax at "full" mode, different scoring in the order of accuracy
 are: naive ≈ evalue < localID < bitscore < globalID1 ≈ globalID2 ≈ globalID3
 < rank < freq < metago < netgo. In particular, the three scoring functions that
 consider all hits (freq, metago, netgo) result in consistently higher accuracy
-than all scorings that use only the top hit (evalue, localID, bitsore,
-globalID, rank), including the current official "blast" baseline (localID).
+than all scorings that use only the top hit of each term (evalue, localID,
+bitsore, globalID, rank), including the current official "blast" baseline
+(localID) used in CAFA assessment.
 
 ## License ##
 This program is free software: you can redistribute it and/or modify

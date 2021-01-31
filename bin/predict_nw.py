@@ -156,6 +156,8 @@ def write_output(nw_dict,annotation_dict,suffix):
                         predict_dict[GOterm]=1+predict_dict[GOterm
                             ]/len(nw_dict[target])
                 elif m>=6:
+                    if denominator<=0:
+                        continue
                     for GOterm in predict_dict:
                         predict_dict[GOterm]/=denominator
                 for cscore,GOterm in sorted([(predict_dict[GOterm],

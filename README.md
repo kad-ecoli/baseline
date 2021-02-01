@@ -185,6 +185,12 @@ higher accuracy than all scorings that use only the top hit of each term
 (evalue, localID, bitsore, globalID, rank), including the current official 
 "blast" baseline (localID) used in CAFA assessment.
 
+
+![Fmax_full_nw.png](Fmax_full_nw.png?raw=true "Fmax_full_nw.png")
+Comparison between NW and blast show that global alignment does not result in
+more accurate GO prediction than local alignment, except for alnscore/bitscore,
+where NW slightly outperform blast.
+
 ## License ##
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

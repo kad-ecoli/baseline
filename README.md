@@ -39,7 +39,7 @@ Assess the performance (Fmax) of different predictor:
 ./plot.py
 ```
 Assessment summaries are at ``CAFA_assessment_tool/results/``.
-Summary graphic is at Fmax_full.png.
+Summary graphic is at [Fmax_full.png](Fmax_full.png).
 
 There is also a predictor based on the Needleman-Wunsch global aligner 
 (``bin/predict_nw.py``). It is not run by default because of very long running

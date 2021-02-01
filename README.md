@@ -189,7 +189,10 @@ higher accuracy than all scorings that use only the top hit of each term
 ![Fmax_full_nw.png](Fmax_full_nw.png?raw=true "Fmax_full_nw.png")
 Comparison between NW and blast show that global alignment does not result in
 more accurate GO prediction than local alignment, except for alnscore/bitscore,
-where NW slightly outperform blast.
+where NW slightly outperform blast. NW and blast result in the same performance
+by freq because the NW implement only perform realignment of blast hits rather
+than a full database search; since the hits are the same, the frequency of GO
+terms among hits are also the same.
 
 ## License ##
 This program is free software: you can redistribute it and/or modify

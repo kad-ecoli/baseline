@@ -54,9 +54,12 @@ for a,Aspect in enumerate(["mf","bp","cc"]):
         plt.ylabel("%s Fmax (%s targets)"%(
             Aspect.upper(),Knowledge), labelpad=0,fontsize=fontsize)
         plt.yticks(fontsize=fontsize)
-        plt.xticks(range(len(fmax_list)),
-            [method.replace('_','') for method in method_list],
-            rotation=90,fontsize=fontsize)
+        xticks=[]
+        for method in method_list:
+            xticks.append(method.replace('_',''))
+            if xticks[-1]=="alnscore1":
+                xticks[-1]+="\nbitscore1"
+        plt.xticks(range(len(fmax_list)),xticks,rotation=90,fontsize=fontsize)
         plt.axis([-0.5,len(method_list)-0.5,0,0.73])
         ax.tick_params('x',length=0)
         ax.tick_params('y',length=3)

@@ -4,6 +4,7 @@ rootdir=`dirname $FILE`
 cd $rootdir/CAFA_assessment_tool
 
 method_list="naive_1
+iea_1
 blastlocalID_1
 blastglobalID_1
 blastglobalID_2

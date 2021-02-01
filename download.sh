@@ -10,6 +10,7 @@ wget https://www.biofunctionprediction.org/cafa-targets/CAFA3_training_data.tgz 
 wget https://ndownloader.figshare.com/files/17519846 -O supplementary_data.tar.gz
 wget https://www.biofunctionprediction.org/annotations/gene_ontology_edit.obo.2016-06-01.gz -O gene_ontology_edit.obo.2016-06-01.gz
 wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.4.0/ncbi-blast-2.4.0+-x64-linux.tar.gz -O ncbi-blast-2.4.0+-x64-linux.tar.gz
+wget ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/old/UNIPROT/goa_uniprot_all.gaf.157.gz -O goa_uniprot_all.gaf.157.gz
 
 echo decompress CAFA3 data
 tar -xvf CAFA3_targets.tgz
@@ -32,7 +33,7 @@ for prefix in `cat list|sed 's/.fasta//g'`;do
     $rootdir/bin/makeblastdb -in $prefix.fasta -dbtype prot -parse_seqids
     $rootdir/bin/blastdbcmd  -db $prefix.fasta -dbtype prot -entry_batch $rootdir/download/benchmark20171115/lists/all_type.txt -out $rootdir/input/$prefix.fasta
     if [ -f "$rootdir/input/$prefix.fasta" ] && [ ! -s "$rootdir/input/$prefix.fasta" ];then
-        rm "$rootdir/input/$prefix.fasta"
+	rm "$rootdir/input/$prefix.fasta"
     fi
     rm $prefix.fasta.p*
 done
@@ -43,3 +44,6 @@ zcat $rootdir/download/gene_ontology_edit.obo.2016-06-01.gz > $rootdir/data/go-b
 cp $rootdir/download/CAFA3_training_data/uniprot_sprot_exp.fasta $rootdir/data/uniprot_sprot_exp.fasta
 $rootdir/bin/makeblastdb -in uniprot_sprot_exp.fasta -dbtype prot -parse_seqids
 $rootdir/bin/propagate_training_terms.py go-basic.obo $rootdir/download/CAFA3_training_data/uniprot_sprot_exp.txt
+zcat $rootdir/download/goa_uniprot_all.gaf.157.gz|grep -P `cat $rootdir/input/list |sed 's/^/taxon:/g'|paste -sd'|'|sed 's/^/(/g'|sed 's/$/\b)/g'`|grep -P "^UniProtKB" |grep -vP "\tND\t"|grep -vP "\tNOT\b"  > $rootdir/data/goa_uniprot_all.gaf
+$rootdir/bin/cull_IEA.py go-basic.obo $rootdir/input/target.map goa_uniprot_all.gaf goa_uniprot_all.clean.gaf goa_uniprot_all.is_a
+mv goa_uniprot_all.clean.gaf goa_uniprot_all.gaf 

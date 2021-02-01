@@ -16,14 +16,18 @@ are already included as part of this package.
 cd src/; make install ; cd .. # Not needed if global alignment is not used.
 ```
 
+To run the IEA baseline, the ``input/target.map`` file must be manually
+prepared to map entry name to uniprot accession. A version for CAFA3 targets
+are already pre-generated.
+
 For assessment, this package use the 
 [CAFA_assessment_tool](https://github.com/ashleyzhou972/CAFA_assessment_tool),
 which dependends on python3 to generate correct Fmax. For prediction, both
 python2.7 and python3 can be used, and will generate identical result.
 
 ## Usage ##
-Run naive (``bin/predict_naive.py``) and blast (``bin/predict_blast.py``)
-baseline predictors on CAFA3 targets:
+Run naive (``bin/predict_naive.py``), blast (``bin/predict_blast.py``) and
+IEA (``bin/predict_IEA.py``) baseline predictors on CAFA3 targets:
 ```bash
 ./predict.sh
 ```
@@ -47,7 +51,7 @@ alignment based predictor, use:
 ./plot_nw.py
 ```
 Assessment summaries are at ``CAFA_assessment_tool/results/``.
-Summary graphic is at Fmax_full_nw.png.
+Summary graphic is at [Fmax_full_nw.png](Fmax_full_nw.png).
 
 ## Math ##
 In naive baseline (``bin/predict_naive.py``), the confidence score of
@@ -156,15 +160,30 @@ alignment score is used instead of bitscore for equation (10) and (11).
 For (7), the ranking is based on NWalign alignment score rather than the
 ranking in the blast output.
 
+
+In IEA baseline (``bin/predict_iea.py``), the GO term of a protein is copied
+from its full set of uniprot-goa, which mainly includes (but is not limited) 
+electronically inferred annotations with IEA evidence, hence the name.
+The confidence score of the GO term is determined by the evidence code from
+in the uniprot-goa annotation. 
+In [our previous study](https://doi.org/10.1093/bioinformatics/btaa548),
+we obtained statistics on the portion of GO terms with the same evidence
+code ``e`` that are either experimentally confirmed (``N_confirm(e)``) or 
+rejected with a "NOT" qualifier in a later release (``N_reject(e)``). The 
+confidence score of the evidence code ``e`` is therefore:
+```
+Cscore_iea(e) = N_confirm(e) / ( N_confirm(e) + N_reject(e) )   ... (12)
+```
+
 ## Result ##
 ![Fmax_full.png](Fmax_full.png?raw=true "Fmax_full.png")
 In terms of Fmax at "full" mode, different scoring in the order of accuracy
 are: naive ≈ evalue < localID < bitscore < globalID1 ≈ globalID2 ≈ globalID3
-< rank < freq < metago < netgo. In particular, the three scoring functions that
-consider all hits (freq, metago, netgo) result in consistently higher accuracy
-than all scorings that use only the top hit of each term (evalue, localID,
-bitsore, globalID, rank), including the current official "blast" baseline
-(localID) used in CAFA assessment.
+< rank < iea < freq < metago < netgo. In particular, the three scoring
+functions that consider all hits (freq, metago, netgo) result in consistently
+higher accuracy than all scorings that use only the top hit of each term 
+(evalue, localID, bitsore, globalID, rank), including the current official 
+"blast" baseline (localID) used in CAFA assessment.
 
 ## License ##
 This program is free software: you can redistribute it and/or modify

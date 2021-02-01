@@ -3,17 +3,13 @@
 __pycache__
 prediction/*_*_*_go.txt
 download/00README.txt
-download/CAFA3 Rules.pdf
+download/*.pdf
 download/CAFA3_target_track.xlsx
-download/CAFA3_targets.tgz
-download/CAFA3_training_data.tgz
+download/*.tgz
+download/*.gz
 download/CAFA3_training_data/
-download/Introduction_to_protein_prediction.pdf
 download/Mapping files/
 download/Target files/
 download/benchmark20171115/
-download/gene_ontology_edit.obo.2016-06-01.gz
-download/ncbi-blast-2.4.0+-x64-linux.tar.gz
 download/ncbi-blast-2.4.0+/
-download/supplementary_data.tar.gz
 download/supplementary_data/

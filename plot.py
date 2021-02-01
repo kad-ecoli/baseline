@@ -15,6 +15,7 @@ method_list=[
     "blastglobalID_2",
     "blastglobalID_3",
     "blastrank_1",
+    "iea_1",
     "blastfreq_1",
     "blastmetago_1",
     "blastnetgo_1",

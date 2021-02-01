@@ -1,0 +1,36 @@
+# The following data are obtained from supplement of the following paper:
+# Wei X, et al. Bioinformatics 36.16 (2020): 4383-4388.
+#
+# experimental evidence codes
+EXP	1.00
+IDA	1.00
+IPI	1.00
+IMP	1.00
+IGI	1.00
+IEP	1.00
+# high-throughput evidence codes
+HTP	1.00
+HDA	1.00
+HMP	1.00
+HGI	1.00
+HEP	1.00
+# author/curator statement evidence codes
+TAS	0.99
+NAS	0.99
+IC	0.99
+# computational analysis evidence codes
+ISS	0.98
+ISO	0.98
+ISA	0.98
+ISM	0.98
+IGC	0.98
+RCA	0.98
+# electronic annotation evidence code
+IEA	0.94
+# phylogenetically-inferred annotations
+IBA	0.69
+IBD	0.69
+IKR	0.69
+IRD	0.69
+# all other term
+ALL	0.92

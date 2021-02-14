@@ -6,6 +6,7 @@ docstring='''propagate_training_term.py go-basic.obo uniprot_sprot_exp.txt
 '''
 import sys
 import obo2csv # parsing GO hierachy
+from math import log
 
 def propagate_training_term(obo_dict,infile):
     allterm_dict={'F':dict(),'C':dict(),'P':dict()}
@@ -50,17 +51,36 @@ def propagate_training_term(obo_dict,infile):
         for DB_Object_ID in allterm_dict[Aspect]:
             GO_ID_list+=allterm_dict[Aspect][DB_Object_ID]
         naive_list=[]
+        ic_dict=dict()
         for GO_ID in sorted(set(GO_ID_list)):
             prob=1.*sum([GO_ID in allterm_dict[Aspect][DB_Object_ID] for \
                 DB_Object_ID in allterm_dict[Aspect]])/len(allterm_dict[Aspect])
             name=obo_dict.short(GO_ID).split(' ! ')[1]
-            naive_list.append((prob,GO_ID,name))
-        naive_list.sort(reverse=True)
+            ic_dict[GO_ID]=-log(prob,2)
+            naive_list.append((GO_ID,prob,name))
+        # we approximate the ic conditioned on all parent terms by the ic
+        # conditioned on the most specific parent term
+        ic_condition_on_parent=dict()
+        for GO_ID,ic in ic_dict.items():
+            ic_condition_on_parent[GO_ID]=ic
+            max_parent_ic=0
+            for parent_GO in obo_dict.is_a(Term_id=GO_ID, direct=False,
+                name=True, number=False).split('\t'):
+                parent_GO,name=parent_GO.split(" ! ")
+                if parent_GO!=GO_ID and ic_dict[parent_GO]>max_parent_ic:
+                    max_parent_ic=ic_dict[parent_GO]
+            ic_condition_on_parent[GO_ID]-=max_parent_ic
+        
+        naive_list=[(GO_ID,prob,ic_dict[GO_ID],ic_condition_on_parent[GO_ID],name
+            ) for GO_ID,prob,name in naive_list]
+        naive_list.sort(key = lambda x: x[3])
+        naive_list.sort(key = lambda x: x[1],reverse=True)
+
         txt=''
-        for prob,GO_ID,name in naive_list:
-            txt+="%s\t%.6f\t%s"%(GO_ID,prob,name)
+        for GO_ID,prob,ic,parent_ic,name in naive_list:
+            txt+="%s\t%.6f\t%.6f\t%.6f\t%s"%(GO_ID,prob,ic,parent_ic,name)
         fp=open(filename,'w')
-        fp.write(txt)
+        fp.write(txt.replace("\t-0.000000","\t0.000000"))
         fp.close()
     return
 

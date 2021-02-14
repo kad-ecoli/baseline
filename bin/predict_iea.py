@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 docstring='''predict_iea.py target.9606.fasta iea_1_9606_go.txt
     use IEA annotation to predict GO terms for input file target.9606.fasta,
-    output predictions to naive_1_9606_go.txt
+    output predictions to iea_1_9606_go.txt
 '''
 import sys
 from os.path import dirname, basename, abspath

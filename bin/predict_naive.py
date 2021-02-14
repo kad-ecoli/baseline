@@ -15,7 +15,7 @@ def read_naive_prob():
         filename=datdir+"/naive."+Aspect
         fp=open(filename,'r')
         for line in fp.read().splitlines():
-            GOterm,cscore,name=line.split('\t')
+            GOterm,cscore=line.split('\t')[:2]
             if "%.2f"%float(cscore)=="0.00":
                 break
             naive_GOterm_list.append((float(cscore),GOterm))

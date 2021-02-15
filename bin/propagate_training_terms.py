@@ -19,7 +19,7 @@ def propagate_training_term(obo_dict,infile):
         if not DB_Object_ID in DB_Object_ID_list:
             DB_Object_ID_list.append(DB_Object_ID)
         if not GO_ID in obo_dict[Aspect]["Term"]:
-            sys.stderr.write("ERROR! Cannot find GO Term %s\n"%GO_ID_alt)
+            sys.stderr.write("ERROR! Cannot find GO Term %s\n"%GO_ID)
             continue
         if not DB_Object_ID in allterm_dict[Aspect]:
             allterm_dict[Aspect][DB_Object_ID]=[]

@@ -53,26 +53,40 @@ def propagate_training_term(obo_dict,infile):
         naive_list=[]
         ic_dict=dict()
         for GO_ID in sorted(set(GO_ID_list)):
-            prob=1.*sum([GO_ID in allterm_dict[Aspect][DB_Object_ID] for \
-                DB_Object_ID in allterm_dict[Aspect]])/len(allterm_dict[Aspect])
+            num_with_child=sum([GO_ID in allterm_dict[Aspect][DB_Object_ID] \
+                for DB_Object_ID in allterm_dict[Aspect]])
+            prob=1.*num_with_child/len(allterm_dict[Aspect])
             name=obo_dict.short(GO_ID).split(' ! ')[1]
-            ic_dict[GO_ID]=-log(prob,2)
-            naive_list.append((GO_ID,prob,name))
+            ic=-log(prob,2)
+            parent_GO_list=[]
+            for parent_GO in obo_dict.is_a(Term_id=GO_ID, direct=True,
+                name=True, number=False).split('\t'):
+                parent_GO=parent_GO.split(' ! ')[0]
+                if parent_GO!=GO_ID:
+                    parent_GO_list.append(parent_GO)
+            num_with_parent=0
+            for DB_Object_ID in allterm_dict[Aspect]:
+                with_parent_terms=sum([parent_GO in allterm_dict[Aspect][
+                    DB_Object_ID] for parent_GO in parent_GO_list])
+                num_with_parent+=(with_parent_terms==len(parent_GO_list))
+            ic_condition=-log(num_with_child,2)+log(num_with_parent,2)
+            naive_list.append((GO_ID,prob,ic,ic_condition,name))
+        
         # we approximate the ic conditioned on all parent terms by the ic
         # conditioned on the most specific parent term
-        ic_condition_on_parent=dict()
-        for GO_ID,ic in ic_dict.items():
-            ic_condition_on_parent[GO_ID]=ic
-            max_parent_ic=0
-            for parent_GO in obo_dict.is_a(Term_id=GO_ID, direct=False,
-                name=True, number=False).split('\t'):
-                parent_GO,name=parent_GO.split(" ! ")
-                if parent_GO!=GO_ID and ic_dict[parent_GO]>max_parent_ic:
-                    max_parent_ic=ic_dict[parent_GO]
-            ic_condition_on_parent[GO_ID]-=max_parent_ic
-        
-        naive_list=[(GO_ID,prob,ic_dict[GO_ID],ic_condition_on_parent[GO_ID],name
-            ) for GO_ID,prob,name in naive_list]
+        #ic_condition_on_parent=dict()
+        #for GO_ID,ic in ic_dict.items():
+            #ic_condition_on_parent[GO_ID]=ic
+            #max_parent_ic=0
+            #for parent_GO in obo_dict.is_a(Term_id=GO_ID, direct=False,
+                #name=True, number=False).split('\t'):
+                #parent_GO,name=parent_GO.split(" ! ")
+                #if parent_GO!=GO_ID and ic_dict[parent_GO]>max_parent_ic:
+                    #max_parent_ic=ic_dict[parent_GO]
+            #ic_condition_on_parent[GO_ID]-=max_parent_ic
+        #naive_list=[(GO_ID,prob,ic,ic_condition,name
+            #) for GO_ID,prob,name in naive_list]
+
         naive_list.sort(key = lambda x: x[3])
         naive_list.sort(key = lambda x: x[1],reverse=True)
 

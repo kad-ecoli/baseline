@@ -20,11 +20,6 @@ To run the IEA baseline, the ``input/target.map`` file must be manually
 prepared to map entry name to uniprot accession. A version for CAFA3 targets
 are already pre-generated.
 
-For assessment, this package use the 
-[CAFA_assessment_tool](https://github.com/ashleyzhou972/CAFA_assessment_tool),
-which dependends on python3 to generate correct Fmax. For prediction, both
-python2.7 and python3 can be used, and will generate identical result.
-
 ## Usage ##
 Run naive (``bin/predict_naive.py``), blast (``bin/predict_blast.py``) and
 IEA (``bin/predict_IEA.py``) baseline predictors on CAFA3 targets:
@@ -35,11 +30,11 @@ Input files are at ``input/``. Predictions are at ``prediction/``.
 
 Assess the performance (Fmax) of different predictor:
 ```bash
-./assess.sh
-./plot.py
+./assess_both.sh
 ```
-Assessment summaries are at ``CAFA_assessment_tool/results/``.
-Summary graphic is at [Fmax_full.png](Fmax_full.png).
+Assessment summaries are at ``results/``.
+Summary graphic is at [results/Fmax_full.png](results/Fmax_full.png)
+and [results/Smin_full.png](results/Smin_full.png)
 
 There is also a predictor based on the Needleman-Wunsch global aligner 
 (``bin/predict_nw.py``). It is not run by default because of very long running
@@ -47,11 +42,10 @@ time with little to no improvement over blast. To run and assess this global
 alignment based predictor, use:
 ```bash
 ./predict_nw.sh
-./assess_nw.sh
-./plot_nw.py
 ```
-Assessment summaries are at ``CAFA_assessment_tool/results/``.
-Summary graphic is at [Fmax_full_nw.png](Fmax_full_nw.png).
+Assessment summaries are also at ``results/``.
+Summary graphic is at [results/Fmax_full_nw.png](results/Fmax_full_nw.png)
+and [results/Smin_full_nw.png](results/Smin_full_nw.png)
 
 ## Math ##
 In naive baseline (``bin/predict_naive.py``), the confidence score of
@@ -176,9 +170,9 @@ Cscore_iea(e) = N_confirm(e) / ( N_confirm(e) + N_reject(e) )   ... (12)
 ```
 
 ## Result ##
-![Fmax_full.png](Fmax_full.png?raw=true "Fmax_full.png")
+![results/Fmax_full.png](results/Fmax_full.png?raw=true "results/Fmax_full.png")
 In terms of Fmax at "full" mode, different scoring in the order of accuracy
-are: naive ≈ evalue < localID < bitscore < globalID1 ≈ globalID2 ≈ globalID3
+are: evalue < localID < naive < bitscore < globalID1 ≈ globalID2 ≈ globalID3
 < rank < iea < freq < metago < netgo. In particular, the three scoring
 functions that consider all hits (freq, metago, netgo) result in consistently
 higher accuracy than all scorings that use only the top hit of each term 
@@ -186,7 +180,7 @@ higher accuracy than all scorings that use only the top hit of each term
 "blast" baseline (localID) used in CAFA assessment.
 
 
-![Fmax_full_nw.png](Fmax_full_nw.png?raw=true "Fmax_full_nw.png")
+![results/Fmax_full_nw.png](results/Fmax_full_nw.png?raw=true "results/Fmax_full_nw.png")
 Comparison between NW and blast show that global alignment does not result in
 more accurate GO prediction than local alignment, except for alnscore/bitscore,
 where NW slightly outperform blast. NW and blast result in the same performance

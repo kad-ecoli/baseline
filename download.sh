@@ -47,3 +47,10 @@ $rootdir/bin/propagate_training_terms.py go-basic.obo $rootdir/download/CAFA3_tr
 zcat $rootdir/download/goa_uniprot_all.gaf.157.gz|grep -P `cat $rootdir/input/list |sed 's/^/taxon:/g'|paste -sd'|'|sed 's/^/(/g'|sed 's/$/\b)/g'`|grep -P "^UniProtKB" |grep -vP "\tND\t"|grep -vP "\tNOT\b"  > $rootdir/data/goa_uniprot_all.gaf
 $rootdir/bin/cull_IEA.py go-basic.obo $rootdir/input/target.map goa_uniprot_all.gaf goa_uniprot_all.clean.gaf goa_uniprot_all.is_a
 mv goa_uniprot_all.clean.gaf goa_uniprot_all.gaf 
+
+cd $rootdir/groundtruth
+$rootdir/bin/propagate_groundtruth_terms.py $rootdir/data/go-basic.obo F $rootdir/download/benchmark20171115/groundtruth/leafonly_MFO.txt leafonly_MFO.is_a 
+$rootdir/bin/propagate_groundtruth_terms.py $rootdir/data/go-basic.obo P $rootdir/download/benchmark20171115/groundtruth/leafonly_BPO.txt leafonly_BPO.is_a 
+$rootdir/bin/propagate_groundtruth_terms.py $rootdir/data/go-basic.obo C $rootdir/download/benchmark20171115/groundtruth/leafonly_CCO.txt leafonly_CCO.is_a 
+cp $rootdir/download/benchmark20171115/lists/all_type1.txt .
+cp $rootdir/download/benchmark20171115/lists/all_type2.txt .

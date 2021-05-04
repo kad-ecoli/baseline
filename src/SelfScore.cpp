@@ -183,7 +183,7 @@ int main(int argc, char *argv[])
             seqx[l]=AAmap(PDB_lines1[chain_i][l].substr(17,3));
         seqx[xlen]=0;
 
-        long aln_score;
+        long aln_score=0;
         for (l=0;l<xlen;l++)
             aln_score+=BLOSUM[seqx[l]][seqx[l]];
         double bit_score=(lambda*aln_score-log(K))/log(2);

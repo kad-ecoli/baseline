@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
         PrintErrorAndQuit("-split can only be 0, 1 or 2");
 
     /* parse file list */
-    cout<<"#sequence\tlength\traw-score\tbit-score"<<endl;
+    cout<<"#target\tlength\tscore\tbitscore"<<endl;
 
     /* declare previously global variables */
     vector<vector<string> >PDB_lines1; // text of chain1
@@ -147,12 +147,21 @@ int main(int argc, char *argv[])
     char *seqx, *seqy;       // for the protein sequence 
     int  l;                  // residue index
 
+    /* Karlin-Altschul parameters */
+    /* hsp->score = BLAST_Nint(((double) hsp->score) / scoreDivisor);
+     * hsp->bit_score = (hsp->score*lambda*scoreDivisor - logK)/NCBIMATH_LN2;
+     * logK=log(kappa)
+     * NCBIMATH_LN2=log(2)
+     */
     /* ungapped parameters for BLOSUM62 */
     //const double lambda=0.3176;
-    //const double K=0.134;
+    //const double kappa=0.134;
     /* gapped parameters for BLOSUM62 */
-    const double lambda=0.251;
-    const double K=0.031;
+    //const double lambda=0.251;
+    //const double kappa=0.031;
+    /* current blastp implement */
+    const double lambda=0.267;
+    const double kappa=0.041;
 
     /* loop over file names */
     if (infmt_opt>=4) xchainnum=get_FASTA_lines(xname, PDB_lines1, 
@@ -186,9 +195,9 @@ int main(int argc, char *argv[])
         long aln_score=0;
         for (l=0;l<xlen;l++)
             aln_score+=BLOSUM[seqx[l]][seqx[l]];
-        double bit_score=(lambda*aln_score-log(K))/log(2);
-        cout<<chainID_list1[chain_i]<<'\t'<<xlen<<'\t'
-            <<aln_score<<'\t'<<bit_score<<endl;
+        double bit_score=(lambda*aln_score-log(kappa))/log(2);
+        cout<<chainID_list1[chain_i]<<'\t'<<xlen<<'\t'<<aln_score<<'\t'
+            <<setiosflags(ios::fixed)<<setprecision(1)<<bit_score<<endl;
         
         PDB_lines1[chain_i].clear();
         delete [] seqx;

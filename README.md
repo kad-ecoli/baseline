@@ -4,9 +4,6 @@ Implemtation of different CAFA baseline predictors
 ## Install ##
 ```bash
 git clone https://github.com/kad-ecoli/baseline
-cd baseline
-git submodule init
-git submodule update
 ```
 
 The following commands are not necessary, because the binaries and data files

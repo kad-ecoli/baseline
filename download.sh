@@ -47,6 +47,8 @@ $rootdir/bin/propagate_training_terms.py go-basic.obo $rootdir/download/CAFA3_tr
 zcat $rootdir/download/goa_uniprot_all.gaf.157.gz|grep -P `cat $rootdir/input/list |sed 's/^/taxon:/g'|paste -sd'|'|sed 's/^/(/g'|sed 's/$/\b)/g'`|grep -P "^UniProtKB" |grep -vP "\tND\t"|grep -vP "\tNOT\b"  > $rootdir/data/goa_uniprot_all.gaf
 $rootdir/bin/cull_IEA.py go-basic.obo $rootdir/input/target.map goa_uniprot_all.gaf goa_uniprot_all.clean.gaf goa_uniprot_all.is_a
 mv goa_uniprot_all.clean.gaf goa_uniprot_all.gaf 
+$rootdir/bin/SelfScore uniprot_sprot_exp.fasta|grep -v '^#'|cut -f1,3 > uniprot_sprot_exp.fasta.SelfScore_nw
+$rootdir/bin/blastSelfScore.py uniprot_sprot_exp.fasta uniprot_sprot_exp.fasta.SelfScore_blast
 
 cd $rootdir/groundtruth
 $rootdir/bin/propagate_groundtruth_terms.py $rootdir/data/go-basic.obo F $rootdir/download/benchmark20171115/groundtruth/leafonly_MFO.txt leafonly_MFO.is_a 

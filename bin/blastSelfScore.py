@@ -75,6 +75,18 @@ def run_self_blast(infile,outfile,target_list,sequence_dict):
     selfscore_dict=run_blast_cmd(blastp,selfscore_dict)
     return selfscore_dict
 
+def fallback_SelfScore(infile):
+    selfscore_all_dict=dict()
+    cmd="%s/SelfScore %s"%(bindir,infile)
+    p=Popen(cmd,shell=True,stdout=PIPE)
+    stdout,stderr=p.communicate()
+    for line in stdout.splitlines():
+        if line.startswith('#'):
+            continue
+        qacc,length,score,bitscore=line.split('\t')
+        selfscore_all_dict[qacc]=float(bitscore)
+    return selfscore_all_dict
+
 def write_output(target_list,selfscore_dict,outfile):
     txt=''
     for target in target_list:
@@ -93,7 +105,7 @@ if __name__=="__main__":
     infile=sys.argv[1]
     outfile=sys.argv[2]
     target_all_list,sequence_dict=read_sequence_as_dict(infile)
-    selfscore_all_dict=dict()
+    selfscore_all_dict=fallback_SelfScore(infile)
     for i in range(0,len(target_all_list),batchsize):
         target_list=target_all_list[i:i+batchsize]
         selfscore_dict=run_self_blast(infile,outfile,target_list,sequence_dict)

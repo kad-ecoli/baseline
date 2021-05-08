@@ -28,7 +28,7 @@ def read_sequence_as_dict(infile):
     fp.close()
     return target_list,sequence_dict
 
-def run_blast_cmd(blastp,selfscore_dict):
+def run_blast_cmd(blastp,outfile,selfscore_dict):
     cmd="%s/makeblastdb -in %s.fasta -dbtype prot -parse_seqids"%(bindir,outfile)
     os.system(cmd)
     cmd="%s -db %s.fasta -outfmt '6 qacc sacc bitscore' -query %s.fasta"%(blastp,outfile,outfile)
@@ -62,17 +62,17 @@ def run_self_blast(infile,outfile,target_list,sequence_dict):
     make_unscored_fasta(target_list,sequence_dict,selfscore_dict,outfile)
 
     blastp="%s/blastp -max_target_seqs 1"%bindir
-    selfscore_dict=run_blast_cmd(blastp,selfscore_dict)
+    selfscore_dict=run_blast_cmd(blastp,outfile,selfscore_dict)
     if not make_unscored_fasta(target_list,sequence_dict,selfscore_dict,outfile):
         return selfscore_dict
     
     blastp="%s/blastp"%bindir
-    selfscore_dict=run_blast_cmd(blastp,selfscore_dict)
+    selfscore_dict=run_blast_cmd(blastp,outfile,selfscore_dict)
     if not make_unscored_fasta(target_list,sequence_dict,selfscore_dict,outfile):
         return selfscore_dict
     
     blastp="%s/blastp -task blastp-short"%bindir
-    selfscore_dict=run_blast_cmd(blastp,selfscore_dict)
+    selfscore_dict=run_blast_cmd(blastp,outfile,selfscore_dict)
     return selfscore_dict
 
 def fallback_SelfScore(infile):
@@ -97,13 +97,7 @@ def write_output(target_list,selfscore_dict,outfile):
     fp.close()
     return
 
-if __name__=="__main__":
-    if len(sys.argv)!=3:
-        sys.stderr.write(docstring)
-        exit()
-
-    infile=sys.argv[1]
-    outfile=sys.argv[2]
+def run_self_blast_all(infile,outfile):
     target_all_list,sequence_dict=read_sequence_as_dict(infile)
     selfscore_all_dict=fallback_SelfScore(infile)
     for i in range(0,len(target_all_list),batchsize):
@@ -111,4 +105,14 @@ if __name__=="__main__":
         selfscore_dict=run_self_blast(infile,outfile,target_list,sequence_dict)
         for target in selfscore_dict:
             selfscore_all_dict[target]=selfscore_dict[target]
+    return target_all_list,selfscore_all_dict
+
+if __name__=="__main__":
+    if len(sys.argv)!=3:
+        sys.stderr.write(docstring)
+        exit()
+
+    infile=sys.argv[1]
+    outfile=sys.argv[2]
+    target_all_list,selfscore_all_dict=run_self_blast_all(infile,outfile)
     write_output(target_all_list,selfscore_all_dict,outfile)

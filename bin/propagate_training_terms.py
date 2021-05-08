@@ -52,12 +52,15 @@ def propagate_training_term(obo_dict,infile):
             GO_ID_list+=allterm_dict[Aspect][DB_Object_ID]
         naive_list=[]
         ic_dict=dict()
+        # a pseudo-count of 1 is added according to
+        # https://github.com/yuxjiang/CAFA2/blob/master/matlab/pfp_eia.m
+        # natural log instead of log2 was used
         for GO_ID in sorted(set(GO_ID_list)):
             num_with_child=sum([GO_ID in allterm_dict[Aspect][DB_Object_ID] \
                 for DB_Object_ID in allterm_dict[Aspect]])
-            prob=1.*num_with_child/len(allterm_dict[Aspect])
+            prob=(1.+num_with_child)/(1.+len(allterm_dict[Aspect]))
             name=obo_dict.short(GO_ID).split(' ! ')[1]
-            ic=-log(prob,2)
+            ic=-log(prob)
             parent_GO_list=[]
             for parent_GO in obo_dict.is_a(Term_id=GO_ID, direct=True,
                 name=True, number=False).split('\t'):
@@ -69,7 +72,7 @@ def propagate_training_term(obo_dict,infile):
                 with_parent_terms=sum([parent_GO in allterm_dict[Aspect][
                     DB_Object_ID] for parent_GO in parent_GO_list])
                 num_with_parent+=(with_parent_terms==len(parent_GO_list))
-            ic_condition=-log(num_with_child,2)+log(num_with_parent,2)
+            ic_condition=-log(1+num_with_child)+log(1+num_with_parent)
             naive_list.append((GO_ID,prob,ic,ic_condition,name))
         
         # we approximate the ic conditioned on all parent terms by the ic

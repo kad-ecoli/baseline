@@ -48,3 +48,4 @@ zcat $rootdir/download/goa_uniprot_all.gaf.157.gz|grep -P `cat $rootdir/input/li
 $rootdir/bin/cull_IEA.py go-basic.obo $rootdir/input/target.map goa_uniprot_all.gaf goa_uniprot_all.clean.gaf goa_uniprot_all.is_a
 mv goa_uniprot_all.clean.gaf goa_uniprot_all.gaf 
 $rootdir/bin/SelfScore uniprot_sprot_exp.fasta|grep -v '^#'|cut -f1,3 > uniprot_sprot_exp.fasta.SelfScore_nw
+$rootdir/bin/blastSelfScore.py uniprot_sprot_exp.fasta uniprot_sprot_exp.fasta.SelfScore_blast

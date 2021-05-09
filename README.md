@@ -171,6 +171,8 @@ Cscore_iea(e) = N_confirm(e) / ( N_confirm(e) + N_reject(e) )   ... (14)
 ```
 
 ## Result ##
+See full results at the [results/](results/) folder.
+
 ![results/Fmax_full.png](results/Fmax_full.png?raw=true "results/Fmax_full.png")
 In terms of Fmax at "full" mode, different scoring in the order of accuracy
 are: evalue < localID < naive < bitscore1 < bitscore2 ≈ bitscore3 ≈ globalID1

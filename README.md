@@ -181,12 +181,12 @@ See full results at the [results/](results/) folder.
 
 ![results/Fmax_full.png](results/Fmax_full.png?raw=true "results/Fmax_full.png")
 In terms of Fmax at "full" mode, different scoring in the order of accuracy
-are: evalue < localID < naive < bitscore1 < bitscore2 ≈ bitscore3 ≈ globalID1
-≈ globalID2 ≈ globalID3 < rank < iea < freq < metago < netgo. In particular,
-the three scoring functions that consider all hits (freq, metago, netgo)
-result in consistently higher accuracy than all scorings that use only the top
-hit of each term (evalue, localID, bitsore, globalID, rank), including the
-current official "blast" baseline (localID) used in CAFA assessment.
+are: evalue < localID < naive1 ≈ naive2 < bitscore1 < bitscore2 ≈ bitscore3
+≈ globalID1 ≈ globalID2 ≈ globalID3 < rank < iea < freq < metago < netgo. In 
+particular, the three scoring functions that consider all hits (freq, metago, 
+netgo) result in consistently higher accuracy than all scorings that use only
+the top hit of each term (evalue, localID, bitsore, globalID, rank), including
+the current official "blast" baseline (localID) used in CAFA assessment.
 
 
 ![results/Fmax_full_nw.png](results/Fmax_full_nw.png?raw=true "results/Fmax_full_nw.png")

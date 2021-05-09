@@ -15,9 +15,13 @@ blastfreq_1
 blastmetago_1
 blastnetgo_1
 blastbitscore_1
+blastbitscore_2
+blastbitscore_3
 
 nwlocalID_1
 nwalnscore_1
+nwalnscore_2
+nwalnscore_3
 nwglobalID_1
 nwglobalID_2
 nwglobalID_3

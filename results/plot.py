@@ -12,6 +12,8 @@ method_list=[
     "blastlocalID_1",
     "naive_1",
     "blastbitscore_1",
+    "blastbitscore_2",
+    "blastbitscore_3",
     "blastglobalID_1",
     "blastglobalID_2",
     "blastglobalID_3",
@@ -43,7 +45,7 @@ for metric in ["Fmax","Smin"]:
                     fp.close()
                 score_list.append(score)
                 plt.text(m,score+0.01,("%.3f"%score).lstrip('0')[:4],
-                    fontsize=fontsize,va="bottom",ha="center")
+                    rotation=90,fontsize=fontsize,va="bottom",ha="center")
             plt.bar(range(len(score_list)),score_list,
                 align="center",color="lightgrey")
             plt.ylabel("%s %s (%s targets)"%(Aspect.upper(),metric,Knowledge

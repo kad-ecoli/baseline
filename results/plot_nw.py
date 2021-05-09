@@ -10,6 +10,8 @@ rootdir=dirname(resultdir)
 method_list=[
     "localID_1",
     "alnscore_1",
+    "alnscore_2",
+    "alnscore_3",
     "globalID_1",
     "globalID_2",
     "globalID_3",
@@ -19,7 +21,7 @@ method_list=[
     "netgo_1",
     ]
 method_list=[method for method in method_list if os.path.isfile(
-    "%s/blast%s_all_results.txt"%(resultdir,method))
+    "%s/blast%s_all_results.txt"%(resultdir,method.replace("alnscore","bitscore")))
     or os.path.isfile(
     "%s/nw%s_all_results.txt"%(resultdir,method))
     ]
@@ -35,8 +37,8 @@ for metric in ["Fmax","Smin"]:
             for t,tool in enumerate(["nw","blast"]):
                 score_list=[]
                 for m,method in enumerate(method_list):
-                    if t==1 and method=="alnscore_1":
-                        method="bitscore_1"
+                    if t==1 and method.startswith("alnscore"):
+                        method=method.replace("alnscore","bitscore")
                     infile="%s/%s%s_all_results.txt"%(
                         resultdir,tool,method)
                     score=0
@@ -58,8 +60,9 @@ for metric in ["Fmax","Smin"]:
             xticks=[]
             for method in method_list:
                 xticks.append(method.replace('_',''))
-                if xticks[-1]=="alnscore1":
-                    xticks[-1]+="\nbitscore1"
+                for t in "123":
+                    if xticks[-1]=="alnscore"+t:
+                        xticks[-1]+="\nbitscore"+t
             plt.xticks(range(len(score_list)),xticks,rotation=90,fontsize=fontsize)
             plt.axis([-0.5,len(method_list)-0.5,0,0.75 if metric=="Fmax" else 20])
             ax.tick_params('x',length=0)

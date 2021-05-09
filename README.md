@@ -55,6 +55,11 @@ Here, ``M`` is the total number of proteins in the whole training database;
 and ``M(q)`` is the number of proteins annotated with ``q`` in the training
 database. Therefore, equation (1) represents the background probability
 of a GO term in the training database, regardless of target protein.
+The difference between naive1 and naive2 is that the former considers all
+training proteins regardless of species, while the latter only considers
+proteins in the same species as the target protein. For consistency with
+[information content in official CAFA assessment](https://github.com/yuxjiang/CAFA2/blob/master/matlab/pfp_eia.m),
+both nominator and denominator of equation (1) are pseudo-counted by 1.
 
 In the blast baseline (``bin/predict_blast.py``), 9 different scoring functions
 are implemented, as shown in equations (2) to (10) below. In the official

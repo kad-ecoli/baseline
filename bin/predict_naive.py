@@ -25,43 +25,19 @@ def read_naive_prob():
         fp.close()
     return sorted(naive_GOterm_list,reverse=True)
 
-def read_species_naive_prob(species):
-    species_naive_GOterm_list=[]
-    for Aspect in "FPC":
-        filename=datdir+"/naive.%s.%s"%(species,Aspect)
-        if not isfile(filename):
-            filename=datdir+"/naive."+Aspect
-        fp=open(filename,'r')
-        for line in fp.read().splitlines():
-            GOterm,cscore=line.split('\t')[:2]
-            if "%.2f"%float(cscore)=="0.00":
-                break
-            species_naive_GOterm_list.append((float(cscore),GOterm))
-        fp.close()
-    return sorted(species_naive_GOterm_list,reverse=True)
-
 def train_species_naive_prob(species):
-    template_set=set()
+    species_naive_GOterm_list=[]
+    template_list=[]
+    fp=open(datdir+"/uniprot_sprot_exp.species",'r')
+    for line in fp.read().splitlines():
+        items=line.split()
+        if items[1]==species:
+            template_list.append(items[0])
+    fp.close()
+    sys.stderr.write("training on %d templates\n"%len(template_list))
+    template_set=set(template_list)
+
     for Aspect in "FPC":
-        filename=datdir+"/naive.%s.%s"%(species,Aspect)
-        if isfile(filename):
-            return False
-        sys.stderr.write("%s missing. train the species-specific naive model\n"%filename)
-        
-        if len(template_set)==0:
-            template_list=[]
-            fp=open(datdir+"/uniprot_sprot_exp.species",'r')
-            for line in fp.read().splitlines():
-                items=line.split()
-                if items[1]==species:
-                    template_list.append(items[0])
-            fp.close()
-            if len(template_list)==0:
-                sys.stderr.write("0 template. quit\n")
-                return False
-            sys.stderr.write("training on %d templates\n"%len(template_list))
-            template_set=set(template_list)
-        
         annotation_dict=dict()
         GOterm_list=[]
         fp=open(datdir+"/uniprot_sprot_exp."+Aspect,'r')
@@ -72,24 +48,29 @@ def train_species_naive_prob(species):
                 GOterm_list+=annotation_dict[template]
                 annotation_dict[template]=set(annotation_dict[template])
         fp.close()
-        if len(annotation_dict)==0:
-            sys.stderr.write("0 template for %s aspect. skip\n"%Aspect)
-            continue
 
-        prob_list=[]
-        for GOterm in list(set(GOterm_list)):
-            prob=(1.+sum([GOterm in annotation_dict[template] for \
-                template in annotation_dict]))/(1.+len(annotation_dict))
-            prob_list.append((prob,GOterm))
-        prob_list.sort(reverse=True)
-        
-        txt=''
-        for prob,GOterm in prob_list:
-            txt+="%s\t%.6f\n"%(GOterm,prob)
-        fp=open(filename,'w')
-        fp.write(txt)
-        fp.close()
-    return True
+        if len(annotation_dict)==0:
+            filename=datdir+"/naive."+Aspect
+            sys.stderr.write("0 template for %s aspect. fallback to %s\n"%(
+                Aspect,filename))
+            fp=open(filename,'r')
+            for line in fp.read().splitlines():
+                GOterm,cscore=line.split('\t')[:2]
+                if "%.2f"%float(cscore)=="0.00":
+                    break
+                species_naive_GOterm_list.append((float(cscore),GOterm))
+            fp.close()
+        else:
+            cscore_list=[]
+            for GOterm in list(set(GOterm_list)):
+                cscore=(1.+sum([GOterm in annotation_dict[template] for \
+                    template in annotation_dict]))/(1.+len(annotation_dict))
+                if "%.2f"%float(cscore)=="0.00":
+                    continue
+                cscore_list.append((cscore,GOterm))
+            cscore_list.sort(reverse=True)
+            species_naive_GOterm_list+=cscore_list
+    return sorted(species_naive_GOterm_list,reverse=True)
 
 def read_fasta_as_list(infile):
     target_list=[]
@@ -137,8 +118,7 @@ if __name__=="__main__":
     species_naive_GOterm_list=[]
     if len(sys.argv)>3:
         species=sys.argv[3]
-        train_species_naive_prob(species)
-        species_naive_GOterm_list=read_species_naive_prob(species)
+        species_naive_GOterm_list=train_species_naive_prob(species)
     naive_GOterm_list=read_naive_prob()
     target_list=read_fasta_as_list(infile)
     write_output(target_list,naive_GOterm_list,species_naive_GOterm_list,suffix)

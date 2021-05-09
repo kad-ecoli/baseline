@@ -15,3 +15,7 @@ https://github.com/yuxjiang/CAFA2/blob/master/matlab/pfp_eia.m
 and is different from that defined in the original paper:
 Clark, Wyatt T., and Predrag Radivojac. "Information-theoretic evaluation of
 predicted ontological annotations." Bioinformatics 29.13 (2013): i53-i61.
+
+
+uniprot_sprot_exp.species contains table for taxon ID of each training protein.
+This list need to be manually generated using https://www.uniprot.org/uploadlists/

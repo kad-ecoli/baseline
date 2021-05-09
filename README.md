@@ -39,6 +39,7 @@ time with little to no improvement over blast. To run and assess this global
 alignment based predictor, use:
 ```bash
 ./predict_nw.sh
+./assess_both.sh
 ```
 Assessment summaries are also at ``results/``.
 Summary graphic is at [results/Fmax_full_nw.png](results/Fmax_full_nw.png)

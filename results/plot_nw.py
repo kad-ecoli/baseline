@@ -64,7 +64,7 @@ for metric in ["Fmax","Smin"]:
                     if xticks[-1]=="alnscore"+t:
                         xticks[-1]+="\nbitscore"+t
             plt.xticks(range(len(score_list)),xticks,rotation=90,fontsize=fontsize)
-            plt.axis([-0.5,len(method_list)-0.5,0,0.75 if metric=="Fmax" else 20])
+            plt.axis([-0.5,len(method_list)-0.5,0,0.8 if metric=="Fmax" else 20])
             ax.tick_params('x',length=0)
             ax.tick_params('y',length=3)
             ax.tick_params('both',pad=0)

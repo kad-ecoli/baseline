@@ -132,22 +132,26 @@ parsing.
 The ``bin/predict_blastbitscore.py`` script implement an alternative scoring
 based on bitscore:
 ```
-Cscore_bitscore(q) =     max       { bitscore_t(q) / bitscore_self }   ... (11)
+Cscore_bitscore1(q) =     max       { bitscore_t(q) / bitscore_self(target) }  ... (11)
                     t=1, ... , N(q)
+
+Cscore_bitscore2(q) =     max       { bitscore_t(q) / bitscore_self(t) }       ... (12)
+                    t=1, ... , N(q)
+
+Cscore_bitscore3(q) =     max       { bitscore_t(q) / max{ bitscore_self(target),
+                    t=1, ... , N(q)                        bitscore_self(t)} } ... (13)
 ```
-Here, ``bitscore_self`` is the bitscore of aligning target to itself. Thus, to
-compute equation (11), two blast runs are needed: once for searching the target
-against the template database (i.e. training database), the second time for
-searching the target against itself.
+Here, ``bitscore_self(target)`` and ``bitscore_self(t)`` is the bitscore of
+aligning the target to itself and template ``t`` to itself, respectively.
 
 The ``bin/predict_nw.py`` program implements equations (2) to (5) and (7) to
-(11), using Needleman-Wunsch global sequence alignment (NWalign) rather than
+(13), using Needleman-Wunsch global sequence alignment (NWalign) rather than
 blast local alignment. The implementation of NWalign is identical to the 
 [Fortran version](https://zhanglab.ccmb.med.umich.edu/NW-align/),
 but with input and output format changed to support multiple sequences in a
 single input file. Due to time expense of NWalign, it will only be performed
 on the hits identified by a blast run. Since NWalign does not report bitscore,
-alignment score is used instead of bitscore for equation (10) and (11).
+alignment score is used instead of bitscore for equation (10) to (13).
 For (7), the ranking is based on NWalign alignment score rather than the
 ranking in the blast output.
 
@@ -163,18 +167,18 @@ code ``e`` that are either experimentally confirmed (``N_confirm(e)``) or
 rejected with a "NOT" qualifier in a later release (``N_reject(e)``). The 
 confidence score of the evidence code ``e`` is therefore:
 ```
-Cscore_iea(e) = N_confirm(e) / ( N_confirm(e) + N_reject(e) )   ... (12)
+Cscore_iea(e) = N_confirm(e) / ( N_confirm(e) + N_reject(e) )   ... (14)
 ```
 
 ## Result ##
 ![results/Fmax_full.png](results/Fmax_full.png?raw=true "results/Fmax_full.png")
 In terms of Fmax at "full" mode, different scoring in the order of accuracy
-are: evalue < localID < naive < bitscore < globalID1 ≈ globalID2 ≈ globalID3
-< rank < iea < freq < metago < netgo. In particular, the three scoring
-functions that consider all hits (freq, metago, netgo) result in consistently
-higher accuracy than all scorings that use only the top hit of each term 
-(evalue, localID, bitsore, globalID, rank), including the current official 
-"blast" baseline (localID) used in CAFA assessment.
+are: evalue < localID < naive < bitscore1 < bitscore2 ≈ bitscore3 ≈ globalID1
+≈ globalID2 ≈ globalID3 < rank < iea < freq < metago < netgo. In particular,
+the three scoring functions that consider all hits (freq, metago, netgo)
+result in consistently higher accuracy than all scorings that use only the top
+hit of each term (evalue, localID, bitsore, globalID, rank), including the
+current official "blast" baseline (localID) used in CAFA assessment.
 
 
 ![results/Fmax_full_nw.png](results/Fmax_full_nw.png?raw=true "results/Fmax_full_nw.png")

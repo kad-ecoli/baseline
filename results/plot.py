@@ -11,6 +11,7 @@ method_list=[
     "blastevalue_1",
     "blastlocalID_1",
     "naive_1",
+    "naive_2",
     "blastbitscore_1",
     "blastbitscore_2",
     "blastbitscore_3",

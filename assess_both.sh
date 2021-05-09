@@ -4,6 +4,7 @@ rootdir=`dirname $FILE`
 cd $rootdir/results
 
 method_list="naive_1
+naive_2
 iea_1
 blastlocalID_1
 blastglobalID_1

@@ -34,6 +34,16 @@ def read_annotation():
         fp.close()
     return annotation_dict
 
+def read_db_selfscore():
+    dbscore_dict=dict()
+    filename=datdir+"/uniprot_sprot_exp.fasta.SelfScore_nw"
+    fp=open(filename,'r')
+    for line in fp.read().splitlines():
+        target,bitscore=line.split('\t')
+        dbscore_dict[target]=float(bitscore)
+    fp.close()
+    return dbscore_dict
+
 def read_fasta(infile):
     fasta_dict=dict()
     target_list=[]
@@ -47,6 +57,18 @@ def read_fasta(infile):
     fp.close()
     return target_list,fasta_dict
 
+def run_self_nw(infile):
+    selfscore_dict=dict()
+    cmd="%s/SelfScore %s"%(bindir,infile)
+    p=Popen(cmd,shell=True,stdout=PIPE)
+    stdout,stderr=p.communicate()
+    for line in stdout.splitlines():
+        if line.startswith('#'):
+            continue
+        target,length,score,bitscore=line.split()
+        selfscore_dict[target]=float(score)
+    return selfscore_dict
+
 def run_blast(infile):
     cmd="%s/blastp -db %s/uniprot_sprot_exp.fasta -outfmt '6 qacc sacc' -query %s"%(bindir,datdir,infile)
     p=Popen(cmd,shell=True,stdout=PIPE)
@@ -59,18 +81,18 @@ def run_blast(infile):
         blast_dict[qacc].append(sacc)
     return blast_dict
 
-def run_nw(target_list,fasta_dict,blast_dict,outfile):
+def run_nw(target_list,fasta_dict,blast_dict,outfile,
+    dbscore_dict,selfscore_dict):
     nw_dict=dict()
     for target in target_list:
         if not target in blast_dict:
             continue
         txt=">%s\n%s\n"%(target,fasta_dict[target])
-        for suffix in [".target.fasta",".template.fasta"]:
-            fp=open(outfile+suffix,'w')
-            fp.write(txt)
-            fp.close()
+        fp=open(outfile+".target.fasta",'w')
+        fp.write(txt)
+        fp.close()
 
-        cmd="%s/blastdbcmd -db %s/uniprot_sprot_exp.fasta -entry '%s' >> %s.template.fasta"%(
+        cmd="%s/blastdbcmd -db %s/uniprot_sprot_exp.fasta -entry '%s' -out %s.template.fasta"%(
             bindir,datdir,','.join(blast_dict[target]),outfile)
         os.system(cmd)
         
@@ -85,23 +107,23 @@ def run_nw(target_list,fasta_dict,blast_dict,outfile):
             if line.startswith('#'):
                 continue
             target,template,ID1,ID2,IDali,L1,L2,Lali,score=line.split('\t')
-            if target==template:
-                self_alnscore=float(score)
-                continue
             IDali=float(IDali)
             ID1=float(ID1)
             ID2=float(ID2)
             score=max(0,float(score))
             nw_dict[target].append([template,
-                IDali,                    # localID
-                score,                    # alnscore / self_alnscore
-                ID1,                      # globalID1
-                ID2,                      # globalID2
-                min((ID1,ID2)),           # globalID3
-                -1.*len(nw_dict[target]), # ranking
-                1.,                       # freq
-                ID1,                      # MetaGO
-                score,                    # NetGO
+                IDali,                        # localID
+                score/selfscore_dict[target], # alnscore1
+                score/dbscore_dict[template], # alnscore2
+                score/max(selfscore_dict[target],
+                     dbscore_dict[template]), # alnscore1
+                ID1,                          # globalID1
+                ID2,                          # globalID2
+                min((ID1,ID2)),               # globalID3
+                -1.*len(nw_dict[target]),     # ranking
+                1.,                           # freq
+                ID1,                          # MetaGO
+                score,                        # NetGO
             ])
         for t in range(len(nw_dict[target])):
             nw_dict[target][t][2]=min(1,nw_dict[target][t][2]/self_alnscore)
@@ -113,14 +135,16 @@ def run_nw(target_list,fasta_dict,blast_dict,outfile):
 def write_output(nw_dict,annotation_dict,suffix):
     method_list=[
         "nwlocalID_1",  # 0 - nident / length. blast baseline in CAFA
-        "nwalnscore_1", # 1 - alnscore / self_alnscore
-        "nwglobalID_1", # 2 - nident / qlen
-        "nwglobalID_2", # 3 - nident / slen
-        "nwglobalID_3", # 4 - nident / max(qlen,slen)
-        "nwrank_1",     # 5 - 1 - rank / N
-        "nwfreq_1",     # 6 - N(GOterm) / N
-        "nwmetago_1",   # 7 - freq weighted by globalID, used in MetaGO
-        "nwnetgo_1",    # 8 - freq weighted by bitscore, used in NetGO
+        "nwalnscore_1", # 1 - alnscore / target_selfscore
+        "nwalnscore_2", # 2 - alnscore / template_selfscore
+        "nwalnscore_3", # 3 - alnscore / max{target_selfscore,template_selfscore}
+        "nwglobalID_1", # 4 - nident / qlen
+        "nwglobalID_2", # 5 - nident / slen
+        "nwglobalID_3", # 6 - nident / max(qlen,slen)
+        "nwrank_1",     # 7 - 1 - rank / N
+        "nwfreq_1",     # 8 - N(GOterm) / N
+        "nwmetago_1",   # 9 - freq weighted by globalID, used in MetaGO
+        "nwnetgo_1",    #10 - freq weighted by bitscore, used in NetGO
     ]
 
     for m,method in enumerate(method_list):
@@ -140,22 +164,22 @@ def write_output(nw_dict,annotation_dict,suffix):
                     if not template in annotation_dict[Aspect]:
                         continue
                     GOterm_list=annotation_dict[Aspect][template]
-                    if m<=5:
+                    if m<=7:
                         for GOterm in GOterm_list:
                             if not GOterm in predict_dict or \
                                 score>predict_dict[GOterm]:
                                 predict_dict[GOterm]=score
-                    elif m>=6:
+                    elif m>=8:
                         denominator+=score
                         for GOterm in GOterm_list:
                             if not GOterm in predict_dict:
                                 predict_dict[GOterm]=0
                             predict_dict[GOterm]+=score
-                if m==5:
+                if m==7:
                     for GOterm in predict_dict:
                         predict_dict[GOterm]=1+predict_dict[GOterm
                             ]/len(nw_dict[target])
-                elif m>=6:
+                elif m>=8:
                     if denominator<=0:
                         continue
                     for GOterm in predict_dict:
@@ -180,7 +204,10 @@ if __name__=="__main__":
     infile=sys.argv[1]
     suffix=sys.argv[2]
     annotation_dict=read_annotation()
+    dbscore_dict   =read_db_selfscore()
     target_list,fasta_dict=read_fasta(infile)
+    selfscore_dict=run_self_nw(infile)
     blast_dict=run_blast(infile)
-    nw_dict=run_nw(target_list,fasta_dict,blast_dict,suffix)
+    nw_dict=run_nw(target_list,fasta_dict,blast_dict,suffix,
+        dbscore_dict,selfscore_dict)
     write_output(nw_dict,annotation_dict,suffix)

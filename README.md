@@ -1,5 +1,9 @@
 # baseline #
-Implemtation of different CAFA baseline predictors
+Implemtation of different CAFA baseline predictors.
+
+The official reports for [CAFA1](https://doi.org/10.1038/nmeth.2340), [CAFA2](https://doi.org/10.1186/s13059-016-1037-6) and [CAFA3](https://doi.org/10.1186/s13059-019-1835-8) consistently show that top CAFA predictors signficantly outperforms simple homology-based function trasfer, as implemented by their "blast" baseline. On the other hand, it was shown by [several](https://doi.org/10.1186/1471-2105-14-S3-S7) [independent](https://doi.org/10.1016/j.jmb.2018.03.004) [studies](https://doi.org/10.1016/j.ymeth.2015.08.009) that different implementation of scoring based on the same set of blast homology hits can results in vastly different performance; they also show that, if properly designed, a good scoring scheme can result in a competitive baseline method even when only hits from default blast settings are used and no free parameter optimization is involved.
+
+In this project, we tested several implementation of baseline methods, including the "blast" baseline, to investigate the best practice for designing simple but performant baseline methods.
 
 ## Install ##
 ```bash

@@ -2,6 +2,7 @@
 .*.sw*
 __pycache__
 prediction/*_*_*_go.txt
+prediction/*_go.*.fasta
 download/00README.txt
 download/*.pdf
 download/CAFA3_target_track.xlsx

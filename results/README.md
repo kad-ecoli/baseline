@@ -10,8 +10,8 @@ Folder for combined prediction and assessment results.
 
 ## Plotting scripts ##
 
-* ``plot.py`` - plot {Fmax,Smin}_full.png
-* ``plot_nw.py`` - plot {Fmax,Smin}_full_nw.png
+* ``plot.py`` - plot {Fmax,Smin,wFmax}_full.png
+* ``plot_nw.py`` - plot {Fmax,Smin,wFmax}_full_nw.png
 
 ## Result images ##
 

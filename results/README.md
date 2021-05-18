@@ -17,5 +17,7 @@ Folder for combined prediction and assessment results.
 
 * [Fmax_full.png](Fmax_full.png?raw=true)    - Fmax for blast, iea and naive.
 * [Smin_full.png](Smin_full.png?raw=true)    - Smin for blast, iea and naive.
+* [wFmax_full.png](wFmax_full.png?raw=true)    - weighted Fmax for blast, iea and naive.
 * [Fmax_full_nw.png](Fmax_full_nw.png?raw=true) - Fmax for blast and NWalign.
 * [Smin_full_nw.png](Smin_full_nw.png?raw=true) - Smin for blast and NWalign.
+* [wFmax_full_nw.png](wFmax_full_nw.png?raw=true) - weighted Fmax for blast and NWalign.

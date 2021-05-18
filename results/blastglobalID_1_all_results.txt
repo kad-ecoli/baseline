@@ -1,7 +1,7 @@
-Aspect	Type	Mode	Fmax	Cutoff	Smin	Cutoff	Coverage
-mfo	NK	full	0.4664	0.24	7.8187	0.51	0.9956
-mfo	LK	full	0.4587	0.29	7.0712	0.65	0.9984
-bpo	NK	full	0.3275	0.33	15.6255	0.87	0.9976
-bpo	LK	full	0.3773	0.41	9.4726	0.96	1.0000
-cco	NK	full	0.4347	0.26	6.5614	0.67	1.0000
-cco	LK	full	0.4107	0.31	6.2685	0.96	1.0000
+Aspect	Type	Mode	Fmax	Cutoff	Smin	Cutoff	wFmax	Cutoff	Coverage
+mfo	NK	full	0.4664	0.24	7.8187	0.51	0.4019	0.24	0.9956
+mfo	LK	full	0.4587	0.29	7.0712	0.65	0.4267	0.30	0.9984
+bpo	NK	full	0.3275	0.33	15.6255	0.87	0.2746	0.33	0.9976
+bpo	LK	full	0.3773	0.41	9.4726	0.96	0.3224	0.40	1.0000
+cco	NK	full	0.4347	0.26	6.5614	0.67	0.3167	0.31	1.0000
+cco	LK	full	0.4107	0.31	6.2685	0.96	0.3041	0.31	1.0000

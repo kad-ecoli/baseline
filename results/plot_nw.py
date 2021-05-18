@@ -28,7 +28,7 @@ method_list=[method for method in method_list if os.path.isfile(
 fontsize=9
 color_list=["darkgrey","lightgrey"]
 
-for metric in ["Fmax","Smin"]:
+for metric in ["Fmax","Smin","wFmax"]:
     plt.figure(figsize=(7.87,7.87))
     for a,Aspect in enumerate(["mf","bp","cc"]):
         for k,Knowledge in enumerate(["NK","LK"]):
@@ -46,7 +46,12 @@ for metric in ["Fmax","Smin"]:
                         fp=open(infile,'r')
                         for line in fp.read().splitlines():
                             if line.startswith("%so\t%s\tfull"%(Aspect,Knowledge)):
-                                score=float(line.split()[3 if metric=="Fmax" else 5])
+                                if metric=="Fmax":
+                                    score=float(line.split()[3])
+                                elif metric=="Smin":
+                                    score=float(line.split()[5])
+                                elif metric=="wFmax":
+                                    score=float(line.split()[7])
                         fp.close()
                     score_list.append(score)
                     plt.text(m,score+0.01,("%.3f"%score).lstrip('0')[:4],
@@ -64,7 +69,10 @@ for metric in ["Fmax","Smin"]:
                     if xticks[-1]=="alnscore"+t:
                         xticks[-1]+="\nbitscore"+t
             plt.xticks(range(len(score_list)),xticks,rotation=90,fontsize=fontsize)
-            plt.axis([-0.5,len(method_list)-0.5,0,0.8 if metric=="Fmax" else 20])
+            ymax=0.8
+            if metric=="Smin":
+                ymax=20
+            plt.axis([-0.5,len(method_list)-0.5,0,ymax])
             ax.tick_params('x',length=0)
             ax.tick_params('y',length=3)
             ax.tick_params('both',pad=0)

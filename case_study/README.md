@@ -2,7 +2,9 @@
 
 As a case study of the impact of different blast scoring, we check CAFA3 NK target
 T37020011939 (UniProt ID [SCRK3_ARATH](https://www.uniprot.org/uniprot/Q9LNE4)),
-which is a fructokinase found in the cytosol and extracellular region of Arabidopsis thaliana. As a probably fructokinase-3, this protein transfers the phosphate group from ATP to D-fructose. 
+which is a fructokinase found in the cytosol and extracellular region of 
+Arabidopsis thaliana. As a fructokinase, this protein transfers the phosphate 
+group from ATP to D-fructose. 
 
 ```
 >T37020011939 SCRK3_ARATH
@@ -30,5 +32,8 @@ Moreover, blastlocalID incorrectly predict that the CC of this protein is
 GO:0009570 "chloroplast stroma" with a high probability of 0.64, respectively. 
 This prediction is based on a single template
 [Q9C524](https://www.uniprot.org/uniprot/Q9C524), which is the only template
-with this term among all 26 CC templates. blastfreq on the other hand only
-assigns a low probability of 0.04 to this term.
+with this term among all 26 CC templates. This prediction is likely incorrect 
+because Arabidopsis thaliana has another protein (UniProt ID
+[SCRK6_ARATH](https://www.uniprot.org/uniprot/Q9C524)) as the chloroplastic
+fructokinase. blastfreq on the other hand only assigns a low probability of
+0.04 to this term.

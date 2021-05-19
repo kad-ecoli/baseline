@@ -121,7 +121,7 @@ def run_nw(target_list,fasta_dict,blast_dict,outfile,
                 ID2,                          # globalID2
                 min((ID1,ID2)),               # globalID3
                 -1.*len(nw_dict[target]),     # ranking
-                1.,                           # freq
+                1.*(score>0),                 # freq
                 ID1,                          # MetaGO
                 score,                        # NetGO
             ])

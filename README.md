@@ -195,11 +195,9 @@ the current official "blast" baseline (localID) used in CAFA assessment.
 
 ![results/Fmax_full_nw.png](results/Fmax_full_nw.png?raw=true "results/Fmax_full_nw.png")
 Comparison between NW and blast show that global alignment does not result in
-more accurate GO prediction than local alignment, except for alnscore/bitscore,
-where NW slightly outperform blast. NW and blast result in the same performance
-by freq because the NW implement only perform realignment of blast hits rather
-than a full database search; since the hits are the same, the frequency of GO
-terms among hits are also the same.
+significantly more accurate GO prediction than local alignment. The freq 
+performances of NW and blast are different because the NW implement only
+includes a subset of blast hits with positive global alignment score.
 
 ## License ##
 This program is free software: you can redistribute it and/or modify

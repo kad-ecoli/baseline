@@ -11,6 +11,7 @@ wget https://ndownloader.figshare.com/files/17519846 -O supplementary_data.tar.g
 wget https://www.biofunctionprediction.org/annotations/gene_ontology_edit.obo.2016-06-01.gz -O gene_ontology_edit.obo.2016-06-01.gz
 wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.4.0/ncbi-blast-2.4.0+-x64-linux.tar.gz -O ncbi-blast-2.4.0+-x64-linux.tar.gz
 wget ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/old/UNIPROT/goa_uniprot_all.gaf.157.gz -O goa_uniprot_all.gaf.157.gz
+wget http://github.com/bbuchfink/diamond/releases/download/v2.0.9/diamond-linux64.tar.gz -O diamond-linux64.tar.gz
 
 echo decompress CAFA3 data
 tar -xvf CAFA3_targets.tgz
@@ -18,11 +19,13 @@ tar -xvf CAFA3_training_data.tgz
 tar -xvf supplementary_data.tar.gz
 tar -xvf supplementary_data/cafa3/benchmark20171115.tar
 tar -xvf ncbi-blast-2.4.0+-x64-linux.tar.gz
+tar -xvf diamond-linux64.tar.gz
 
 echo process CAFA3 data
 cp $rootdir/download/ncbi-blast-2.4.0+/bin/makeblastdb $rootdir/bin
 cp $rootdir/download/ncbi-blast-2.4.0+/bin/blastp      $rootdir/bin
 cp $rootdir/download/ncbi-blast-2.4.0+/bin/blastdbcmd  $rootdir/bin
+cp $rootdir/download/diamond                           $rootdir/bin
 cat $rootdir/download/benchmark20171115/lists/*o_all_type1.txt |sort |uniq > $rootdir/download/benchmark20171115/lists/all_type1.txt
 cat $rootdir/download/benchmark20171115/lists/*o_all_type2.txt |sort |uniq > $rootdir/download/benchmark20171115/lists/all_type2.txt
 cat $rootdir/download/benchmark20171115/lists/all_type1.txt $rootdir/download/benchmark20171115/lists/all_type2.txt > $rootdir/download/benchmark20171115/lists/all_type.txt 

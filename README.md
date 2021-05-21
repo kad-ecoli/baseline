@@ -29,25 +29,31 @@ IEA (``bin/predict_IEA.py``) baseline predictors on CAFA3 targets:
 ```
 Input files are at ``input/``. Predictions are at ``prediction/``.
 
-Assess the performance (Fmax) of different predictor:
+Assess the performance (Fmax, Smin, wFmax) of different predictor:
 ```bash
-./assess_both.sh
+./assess_all.sh
 ```
 Assessment summaries are at ``results/``.
-Summary graphic is at [results/Fmax_full.png](results/Fmax_full.png)
-and [results/Smin_full.png](results/Smin_full.png)
+Summary graphic is at [results/Fmax_full.png](results/Fmax_full.png?raw=true),
+[results/Smin_full.png](results/Smin_full.png?raw=true) and
+[results/wFmax_full.png](results/wFmax_full.png?raw=true).
 
-There is also a predictor based on the Needleman-Wunsch global aligner 
-(``bin/predict_nw.py``). It is not run by default because of very long running
-time with little to no improvement over blast. To run and assess this global
-alignment based predictor, use:
+There are also two predictor based on the Needleman-Wunsch (NW) global aligner
+(``bin/predict_nw.py``) and DIAMOND local aligner (``bin/predict_diamond``).
+They are not run by default due to little to no improvement over blast and
+in the case NW, very long running time. Run and assess these two predictors by:
 ```bash
 ./predict_nw.sh
+./predict_diamond.sh
 ./assess_both.sh
 ```
 Assessment summaries are also at ``results/``.
-Summary graphic is at [results/Fmax_full_nw.png](results/Fmax_full_nw.png)
-and [results/Smin_full_nw.png](results/Smin_full_nw.png)
+Summary graphic is at [results/Fmax_full_nw.png](results/Fmax_full_nw.png?raw=true),
+[results/Smin_full_nw.png](results/Smin_full_nw.png?raw=true) and
+[results/wFmax_full_nw.png](results/wFmax_full_nw.png?raw=true) for NW; and at
+[results/Fmax_full_diamond.png](results/Fmax_full_diamond.png?raw=true),
+[results/Smin_full_diamond.png](results/Smin_full_diamond.png?raw=true) and
+[results/wFmax_full_diamond.png](results/wFmax_full_diamond.png?raw=true) for DIAMOND.
 
 ## Math ##
 In naive baseline (``bin/predict_naive.py``), the confidence score of
@@ -192,11 +198,11 @@ netgo) result in consistently higher accuracy than all scorings that use only
 the top hit of each term (evalue, localID, bitsore, globalID, rank), including
 the current official "blast" baseline (localID) used in CAFA assessment.
 
-
-![results/Fmax_full_nw.png](results/Fmax_full_nw.png?raw=true "results/Fmax_full_nw.png")
-Comparison between NW and blast show that global alignment does not result in
-significantly more accurate GO prediction than local alignment. The freq 
-performances of NW and blast are the same because NW only realigns the same
+![results/Fmax_full_diamond.png](results/Fmax_full_diamond.png?raw=true "results/Fmax_full_diamond.png")
+Comparison among DIAMOND, NW and blast show that global alignment does not
+result in significantly more accurate GO prediction than local alignment, and
+that the faster DIAMOND is slightly worse than blast under default parameters.
+The performance of NW and blast are the same because NW only realigns the same
 set of hits found by blast.
 
 ## License ##

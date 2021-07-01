@@ -11,6 +11,7 @@ bindir=dirname(abspath(__file__))
 rootdir=dirname(bindir)
 datdir=rootdir+"/data"
 labeldir=rootdir+"/groundtruth"
+root_terms={ "GO:0005575", "GO:0003674", "GO:0008150"}
 
 def read_list_file(list_file):
     fp=open(list_file,'r')
@@ -31,10 +32,12 @@ def read_label():
         fp.close()
         for line in lines:
             target,GOterms=line.split()
+            GOterms=set([GOterm for GOterm in GOterms.split(','
+                           ) if not GOterm in root_terms])
             if target in NK_list:
-                label_dict['NK'][Aspect][target]=set(GOterms.split(','))
+                label_dict['NK'][Aspect][target]=GOterms
             elif target in LK_list:
-                label_dict['LK'][Aspect][target]=set(GOterms.split(','))
+                label_dict['LK'][Aspect][target]=GOterms
             else:
                 print("WARNING! Unclassified labeled target "+target)
     for target in NK_list:
@@ -71,6 +74,8 @@ def read_prediction(obo_dict,infile,label_dict):
         if len(items)!=3:
             continue
         target,GOterm,cscore=items
+        if GOterm in root_terms:
+            continue
         Aspect=''
         for a in "FPC":
             if GOterm in obo_dict[a]["Term"]:
